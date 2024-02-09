@@ -10,8 +10,8 @@ services:
       - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     ports:
       - "9004:9001"
-#    environment:
-#      PHP_IDE_CONFIG: serverName=personal.project
+    environment:
+      - 'DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE}'
 
   nginx:
     image: nginx:stable
@@ -26,15 +26,15 @@ services:
   mysql:
     image: mysql/mysql-server:8.0.23
     ports:
-      - "3306:3306"
+      - ${MYSQL_PORT}:3306
     environment:
-      MYSQL_DATABASE: project
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_ROOT_HOST: "%"
     command: --lower_case_table_names=1
 
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     environment:
@@ -48,7 +48,14 @@ services:
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
 
+  ###> symfony/mailer ###
+  mailer:
+    image: schickling/mailcatcher
+    ports: ["1025", "1080"]
+###< symfony/mailer ###
+
 volumes:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database_data:
 ###< doctrine/doctrine-bundle ###
+

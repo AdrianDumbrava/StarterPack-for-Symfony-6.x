@@ -1,12 +1,18 @@
-FROM php:8.1-fpm
+# Base image compatible with ARM
+FROM php:8.1-fpm-alpine
+
+# Install autoconf and other build dependencies
+RUN apk add --update --no-cache \
+    autoconf build-base \
+    zlib-dev g++ git icu-dev musl-dev libzip-dev linux-headers \
+    nodejs npm
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer
 
-RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
+RUN docker-php-ext-install intl opcache pdo pdo_mysql \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
     && docker-php-ext-configure zip \
@@ -15,5 +21,7 @@ RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzi
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-WORKDIR /var/www/app
+# Install Yarn
+RUN npm install -g yarn
 
+WORKDIR /var/www/app

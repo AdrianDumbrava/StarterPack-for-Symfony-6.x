@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -8,9 +9,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
-    #[Route(path: '/test', name: 'test')]
+    #[Route(path: '/foo', name: 'foo')]
     public function test(): Response
     {
-        return $this->render('test.html.twig');
+        $bar = 'bar';
+
+        return $this->render('test.html.twig', [
+            'bar' => $bar,
+        ]);
     }
 }

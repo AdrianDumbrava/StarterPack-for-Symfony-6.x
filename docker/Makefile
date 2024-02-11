@@ -1,12 +1,19 @@
-sh:
-	docker-compose exec php ash
+.PHONY: composer yarn doctrine all
 
-yarn:
-	docker-compose exec php yarn install --force
-	docker-compose exec php yarn encore dev
+PHP_EXEC = docker-compose exec php
 
-doctrine:
-	docker-compose exec php ./bin/console d:d:d --force
-	docker-compose exec php ./bin/console d:d:c
-	docker-compose exec php ./bin/console d:m:m --no-interaction
-	#docker-compose exec php ./bin/console d:f:l
+ash:
+	$(PHP_EXEC) ash
+
+all: composer yarn doctrine
+
+composer:
+	$(PHP_EXEC) composer install --no-interaction
+
+yarn: composer
+	$(PHP_EXEC) yarn install
+	$(PHP_EXEC) yarn encore dev
+
+doctrine: yarn
+	$(PHP_EXEC) bin/console d:d:c --if-not-exists
+	$(PHP_EXEC) bin/console d:m:m --no-interaction

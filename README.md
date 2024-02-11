@@ -26,6 +26,7 @@ Connecting to MySQL is pretty straightforward:
 
 ### Running tests
 * If you want to run specific test, use `vendor/bin/phpunit tests/FooTest.php --filter=testMethodName` command in PHP container:
+* Use `vendor/bin/rector process --dry-run` to see what changes Rector recommends
 
 
 ### Local environment

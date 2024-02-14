@@ -8,8 +8,6 @@ class DumpTest extends TestCase
 {
     public function testSeeIfItWorks(): void
     {
-        $test = 1;
-        $lala = $test + 2;
         $this->assertArrayHasKey(1, [1 => 1], 'yes');
     }
 
